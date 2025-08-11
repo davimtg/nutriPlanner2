@@ -1,0 +1,236 @@
+# Especificação Técnica e de UX - NutriPlanner
+
+## 1. Visão Geral e Objetivo do Site
+
+### 1.1. Nome e Propósito Principal
+- **Nome:** NutriPlanner
+- **Propósito:** Um aplicativo web completo para planejamento de dieta personalizada, que permite aos usuários gerenciar ingredientes e receitas, planejar refeições diárias, acompanhar metas nutricionais, gerar listas de compras automáticas e receber sugestões inteligentes baseadas em Inteligência Artificial.
+
+### 1.2. Público-alvo
+- Indivíduos interessados em saúde e bem-estar, que buscam organizar sua alimentação para atingir objetivos específicos (perda de peso, ganho de massa, manutenção).
+- Pessoas com restrições alimentares ou que precisam de um controle nutricional mais rigoroso.
+- Entusiastas da culinária que desejam organizar suas receitas e planejar seu uso.
+- Nutricionistas ou profissionais de saúde que podem usar a ferramenta para gerenciar planos de seus clientes.
+
+### 1.3. Estilo e Tom Geral
+- **Estilo:** Moderno, limpo, profissional e intuitivo. A interface é organizada, utilizando layouts baseados em cards e grades para apresentar informações de forma clara e acessível.
+- **Tom:** Encorajador, informativo e prático. A linguagem é direta e positiva, com o objetivo de capacitar o usuário a tomar controle de sua nutrição (ex: "Planeje sua dieta, viva melhor!").
+
+---
+
+## 2. Estrutura e Arquitetura de Páginas
+
+A aplicação é uma Single Page Application (SPA) com navegação gerenciada por `react-router-dom`. A estrutura geral de cada página consiste em:
+1.  **Navbar (Barra de Navegação):** Fixa no topo da tela.
+2.  **Conteúdo Principal (`<main>`):** Onde o conteúdo da página específica é renderizado.
+3.  **Footer (Rodapé):** Na parte inferior da página.
+
+### 2.1. Lista de Páginas Existentes
+
+-   **`/` (Dashboard):** Página inicial. Exibe um resumo do dia atual, incluindo consumo de nutrientes, refeições planejadas e atalhos para outras seções.
+-   **`/planner` (Planejador):** Ferramenta principal para planejar refeições. Apresenta uma visão semanal e diária.
+-   **`/recipes` (Receitas):** Biblioteca de todas as receitas cadastradas pelo usuário.
+-   **`/recipe/:id` (Detalhe da Receita):** Exibe informações completas de uma receita específica.
+-   **`/smart-recipe` (Sugestões IA):** Interface para gerar receitas ou planos de dieta completos usando a API Gemini.
+-   **`/calculators` (Calculadoras):** Ferramentas para calcular necessidades nutricionais (BMR, TDEE, Macros).
+-   **`/manage-data` (Gerenciar Dados):** Painel para CRUD (Criar, Ler, Atualizar, Deletar) de ingredientes, receitas, setores e conversões de unidades. Também inclui funcionalidades de importação/exportação.
+-   **`/shopping-list` (Lista de Compras):** Gera uma lista de compras com base no plano de refeições para um período selecionado.
+-   **`/shopping-list-sheet` (Planilha de Compras):** Visão detalhada da lista de compras, permitindo cálculos de custos.
+-   **`/diet-history` (Histórico):** Visualização de planos de dieta salvos anteriormente, com opções para restaurar, exportar ou excluir.
+-   **`/plan-settings` (Config. Plano):** Página para definir metas nutricionais globais e importar/exportar o plano de dieta completo.
+
+### 2.2. Ordem dos Elementos por Página
+-   **Navbar:**
+    -   Logo "🥗 NutriPlanner" à esquerda.
+    -   Lista de links de navegação no centro (em telas grandes).
+    -   Ícone de menu "hamburger" à direita (em telas pequenas).
+-   **Conteúdo Principal:** Varia por página, mas geralmente contém um cabeçalho com o título da página, seguido por seções de conteúdo, ferramentas e listas.
+-   **Footer:** Contém texto de copyright e um slogan.
+
+### 2.3. Navegação
+-   A navegação principal é feita através da Navbar.
+-   A navegação secundária ocorre por meio de botões e links dentro das páginas (ex: clicar em uma receita na biblioteca leva para a página de detalhes da receita).
+-   O logo na Navbar sempre leva para o Dashboard (`/`).
+-   O menu "hamburger" em telas móveis revela uma lista vertical com os mesmos links da navegação principal.
+
+---
+
+## 3. Layout e UI (Interface do Usuário)
+
+### 3.1. Estrutura de Colunas e Grades
+-   O layout principal é centralizado com uma largura máxima (`container mx-auto`).
+-   O conteúdo das páginas frequentemente utiliza `grid` do Tailwind CSS para criar layouts responsivos. Por exemplo, o Dashboard usa uma grade para "Ações Rápidas" (`grid-cols-2 sm:grid-cols-3 lg:grid-cols-4`), e a biblioteca de receitas alterna entre uma grade (mosaico) e um layout de lista.
+
+### 3.2. Tamanhos e Proporções
+-   O espaçamento é generoso, usando as unidades de espaçamento do Tailwind (ex: `space-y-8`, `p-6`, `gap-4`).
+-   Cards têm cantos arredondados (`rounded-xl` ou `rounded-lg`) e sombras (`shadow-lg`, `shadow-md`) para criar profundidade.
+
+### 3.3. Paleta de Cores
+-   **Primária (Ações, Destaques):** Verde Esmeralda
+    -   `emerald-600`: `#059669` (principal)
+    -   `emerald-700`: `#047857` (hover)
+    -   `emerald-500`: `#10B981` (anéis de foco, gráficos)
+    -   `emerald-100`: `#D1FAE5` (fundos de destaque leves)
+    -   `emerald-50`: `#ECFDF5` (fundos de hover leves)
+-   **Texto e Fundo:** Cinza Ardósia (Slate)
+    -   `slate-800`: `#1E293B` (texto principal)
+    -   `slate-700`: `#334155` (títulos de seção)
+    -   `slate-600`: `#475569` (texto secundário)
+    -   `slate-500`: `#64748B` (texto de apoio, placeholders)
+    -   `slate-200`: `#E2E8F0` (bordas, fundos de botão secundário)
+    -   `slate-50`: `#F8FAFC` (fundo principal do corpo)
+-   **Perigo (Exclusão):** Vermelho
+    -   `red-600`: `#DC2626`
+    -   `red-700`: `#B91C1C`
+-   **Cores Neutras:**
+    -   `white`: `#FFFFFF` (fundo de cards e modais)
+-   **Cores de Gráfico/Status:**
+    -   `blue-500`: `#3B82F6` (Proteína)
+    -   `orange-500`: `#F97316` (Carboidrato)
+    -   `indigo-600`: `#4F46E5` (Colesterol)
+    -   `purple-600`: `#9333EA` (Fibra)
+
+### 3.4. Tipografia
+-   **Fonte:** Padrão `sans-serif` do sistema (definido pelo Tailwind CSS).
+-   **Tamanhos e Pesos:**
+    -   Títulos de página (`<h1>`): `text-4xl` (36px), `font-bold`.
+    -   Títulos de seção (`<h2>`): `text-2xl` ou `text-3xl`, `font-semibold`.
+    -   Subtítulos (`<h3>`): `text-xl`, `font-semibold`.
+    -   Corpo de texto: `text-base` (16px) ou `text-sm` (14px).
+    -   Botões: `text-sm` (sm), `text-base` (md), `text-lg` (lg), `font-medium`.
+
+### 3.5. Ícones, Imagens e Ilustrações
+-   **Ícones:** Utiliza um conjunto consistente de ícones de linha (estilo Feather Icons), definidos em `components/Icon.tsx`. São SVGs com `stroke="currentColor"` e `strokeWidth="2"`. São usados para reforçar a função de botões e links de navegação.
+-   **Imagens:** Usadas para ingredientes e receitas. O sistema exibe imagens fornecidas pelo usuário (via URL) e possui um fallback para `picsum.photos` ou `unsplash.com`.
+-   **Ilustrações:** Não há ilustrações customizadas, mas ícones maiores são usados em estados vazios para preencher o espaço (ex: `IconBook` na biblioteca de receitas vazia).
+
+### 3.6. Botões
+-   **Componente:** `components/Button.tsx`.
+-   **Variantes:**
+    -   `primary`: Fundo `emerald-600`, texto branco, hover com `bg-emerald-700`.
+    -   `secondary`: Fundo `slate-200`, texto `slate-800`, hover com `bg-slate-300`.
+    -   `danger`: Fundo `red-600`, texto branco, hover com `bg-red-700`.
+    -   `ghost`: Fundo transparente, borda `slate-300`, texto `slate-700`, hover com `bg-slate-100`.
+-   **Tamanhos:**
+    -   `sm`: `px-3 py-1.5 text-sm`.
+    -   `md`: `px-4 py-2 text-base`.
+    -   `lg`: `px-6 py-3 text-lg`.
+-   **Estado de Foco:** Anel de foco visível (`focus:ring-2 focus:ring-offset-2`).
+-   **Estado Desabilitado:** Opacidade 70% (`disabled:opacity-70`).
+-   **Formato:** Cantos arredondados (`rounded-lg`).
+
+---
+
+## 4. UX (Experiência do Usuário)
+
+### 4.1. Fluxo de Navegação Típico
+1.  **Primeira Visita:** O usuário chega ao Dashboard, vê o resumo do dia vazio e é incentivado a planejar refeições ou adicionar dados.
+2.  **Configuração Inicial:** O usuário vai para "Gerenciar Dados" para adicionar seus ingredientes e receitas manualmente ou via importação de CSV.
+3.  **Planejamento:** No "Planejador", o usuário seleciona um dia, clica em "Adicionar" em uma refeição, um modal aparece para buscar e adicionar um ingrediente ou receita.
+4.  **Acompanhamento:** No Dashboard, o usuário visualiza o progresso de suas metas nutricionais com base no que foi planejado.
+5.  **Geração de Lista:** Ao final da semana, o usuário vai para a "Lista de Compras", define o período e gera a lista de itens necessários.
+6.  **Uso de IA:** Se estiver sem ideias, o usuário vai para "Sugestões IA", seleciona ingredientes e pede sugestões de receitas, ou preenche seus objetivos para receber um plano de dieta completo.
+
+### 4.2. Elementos Interativos e Animações
+-   **Modais:** Usados para formulários (adicionar/editar item) e confirmações. O modal aparece com um fundo escurecido e um leve efeito de "zoom in" (`animate-modalShow`). Fecha ao clicar no 'X', no fundo, ou pressionando 'Escape'.
+-   **Toasts/Notificações:** Aparecem no canto inferior direito para fornecer feedback sobre ações (salvo, erro, etc.). Têm um efeito "slide in from bottom" (`animate-toastIn`) e desaparecem após 5 segundos.
+-   **Hover:** Botões, links e cards mudam de cor ou aumentam a sombra ao passar o mouse (`hover:bg-emerald-700`, `hover:shadow-xl`), indicando interatividade.
+-   **Toggles:** Switches animados para ligar/desligar opções, como "Mostrar Fotos".
+-   **Gráficos:** Os gráficos de rosca no Dashboard são animados, preenchendo a circunferência de forma suave (`transition-all duration-500`).
+
+### 4.3. Feedback Visual
+-   **Botão Clicado:** O botão mantém seu estado de hover durante o clique.
+-   **Link Ativo:** O link de navegação da página atual na Navbar tem um fundo `emerald-600` e texto branco para indicar a localização do usuário.
+-   **Carregamento (Loading):** Durante operações assíncronas (como chamar a IA), botões mudam o texto para "Buscando..." e um ícone de spinner animado aparece.
+
+### 4.4. Mensagens
+-   **Erro:** Toasts vermelhos para falhas de API, validação de formulário ou erros de importação.
+-   **Sucesso:** Toasts verdes para confirmações de salvamento, importação bem-sucedida, etc.
+-   **Aviso:** Toasts amarelos para informações importantes que não são erros (ex: "importação com X erros").
+-   **Confirmação:** Modais são usados para ações destrutivas (ex: "Tem certeza que deseja excluir?").
+
+---
+
+## 5. Funcionalidades e Ferramentas
+
+### 5.1. Ferramentas Existentes
+
+-   **Gerenciador de Ingredientes:**
+    -   **Entrada:** Formulário com campos: Nome, URL da Imagem, Unidade, Setor, Marca, Preço, Local de Compra e todos os campos de `NutrientInfo`.
+    -   **Saída:** Um novo ingrediente é adicionado à lista global.
+    -   **Funcionalidade:** CRUD completo, importação/exportação via CSV, sugestão de setor baseada em palavras-chave do nome.
+
+-   **Gerenciador de Receitas:**
+    -   **Entrada:** Formulário com: Nome, Instruções, Porções, Tempo de Preparo, Dificuldade, URL da Imagem e uma lista de ingredientes (selecionados do banco de dados de ingredientes) com suas respectivas quantidades.
+    -   **Saída:** Uma nova receita é salva, com seus nutrientes totais e por porção calculados automaticamente.
+    -   **Funcionalidade:** CRUD completo, importação/exportação via CSV.
+
+-   **Planejador de Refeições (`PlannerPage`):**
+    -   **Entrada:** Ação do usuário para adicionar item a uma refeição em um dia específico. Um modal permite buscar e selecionar um ingrediente ou receita e definir a quantidade.
+    -   **Saída:** O item é adicionado ao plano diário. As barras de progresso de nutrientes do dia são atualizadas em tempo real.
+    -   **Funcionalidade:** Visualização semanal, CRUD de itens em cada refeição, cálculo automático de nutrientes por refeição e por dia.
+
+-   **Gerador de Lista de Compras (`ShoppingListPage`):**
+    -   **Entrada:** Um intervalo de datas selecionado pelo usuário.
+    -   **Saída:** Uma lista de compras consolidada, agrupada por setor. Itens de receitas são decompostos em seus ingredientes. Unidades são padronizadas (ex: 'g' para peso).
+    -   **Funcionalidade:** Geração automática, adição de itens manuais, marcar itens como comprados, exportação para texto, gerenciamento de modelos de lista.
+
+-   **Sugestões com IA (`SmartRecipePage`):**
+    -   **Entrada (Receita):** Até 3 ingredientes selecionados, tipo de refeição, preferências textuais.
+    -   **Entrada (Plano de Dieta):** Duração, metas de calorias/macros, número de refeições, ingredientes a priorizar, preferências textuais.
+    -   **Saída:** Um array JSON com sugestões de receitas ou um plano de dieta completo para vários dias. A interface renderiza essa saída de forma amigável.
+    -   **Funcionalidade:** Integração com a API Gemini do Google (`@google/genai`). O prompt é construído dinamicamente com base nas entradas do usuário e solicita uma resposta em formato JSON estrito. Permite salvar as receitas sugeridas ou o plano de dieta diretamente no sistema do usuário.
+
+-   **Calculadoras Nutricionais (`NutritionalCalculatorsPage`):**
+    -   **Entrada:** Dados do usuário (idade, peso, altura, sexo, % de gordura) e configurações (fórmula, nível de atividade, objetivo).
+    -   **Saída:** Valores calculados de BMR, TDEE e metas de macronutrientes.
+    -   **Funcionalidade:** Implementa as fórmulas Mifflin-St Jeor e Katch-McArdle. Permite que o usuário aplique os resultados como suas metas nutricionais globais no app.
+
+### 5.2. Integrações com APIs
+-   **@google/genai:** Usada na `SmartRecipePage` para se comunicar com os modelos Gemini da Google. A chave de API é obtida da variável de ambiente `process.env.API_KEY`.
+-   **papaparse:** Usada para converter dados de e para o formato CSV nas funcionalidades de importação/exportação.
+
+### 5.3. Regras de Funcionamento
+-   **Cálculo de Nutrientes:** Os nutrientes são sempre baseados em 100g/100ml se a unidade for de peso/volume, ou por unidade se for 'unidade'. Os cálculos para receitas e planos diários agregam os valores com base nas quantidades e porções.
+-   **Persistência de Dados:** Todos os dados (ingredientes, receitas, planos) são salvos no `localStorage` do navegador, tornando o aplicativo funcional offline após o primeiro carregamento. O hook `useData` gerencia toda a lógica de estado e persistência.
+
+---
+
+## 6. Conteúdo Textual e Multimídia
+
+### 6.1. Todos os Textos
+-   **Títulos:** "NutriPlanner", "Planejador Semanal", "Biblioteca de Receitas", "Configurações e Gerenciamento do Plano", etc.
+-   **Slogans/Descrições:** "Seu painel de controle para uma alimentação saudável e organizada.", "Planeje sua dieta, viva melhor!".
+-   **Labels de Botões:** "Adicionar Ingrediente", "Salvar Alterações", "Gerar Plano de Dieta", "Restaurar Plano", "Exportar para CSV".
+-   **Labels de Formulário:** "Nome do Ingrediente", "Unidade de Medida", "Modo de Preparo", "Calorias Diárias Alvo".
+-   **Idioma:** Português do Brasil (pt-BR).
+
+### 6.2. Estilo de Escrita e Tom de Voz
+-   Claro, conciso e orientado para a ação.
+-   Usa termos técnicos de nutrição (Proteína, Carboidrato, TDEE), mas a interface busca torná-los compreensíveis através de unidades e contexto.
+
+### 6.3. Mídias Usadas
+-   Imagens de receitas e ingredientes (URLs externas).
+-   Gráficos SVG gerados dinamicamente para visualização de dados (donut charts, bar charts).
+
+---
+
+## 7. Comportamento Responsivo e Acessibilidade
+
+### 7.1. Comportamento Responsivo
+-   **Mobile (Telas pequenas):**
+    -   Navbar colapsa para um ícone "hamburger".
+    -   Grades de 2, 3 ou 4 colunas se tornam de 1 ou 2 colunas.
+    -   Texto e espaçamentos são ligeiramente reduzidos.
+    -   Flex-containers com `flex-row` em desktop passam para `flex-col` em mobile.
+-   **Tablet (Telas médias, `md:`):** Um estado intermediário, onde a Navbar pode se expandir e as grades podem ter mais colunas.
+-   **Desktop (Telas grandes, `lg:`):** Layout completo com Navbar expandida e grades com o número máximo de colunas.
+
+### 7.2. Acessibilidade
+-   Uso de HTML semântico (`<nav>`, `<main>`, `<footer>`, `<button>`).
+-   Atributos ARIA são aplicados:
+    -   `role="dialog"`, `aria-modal="true"` em modais.
+    -   `aria-label` em botões com apenas ícones.
+    -   `aria-current="page"` em links de navegação ativos.
+    -   `aria-expanded` em botões que controlam co
+(Content truncated due to size limit. Use page ranges or line ranges to read remaining content)
